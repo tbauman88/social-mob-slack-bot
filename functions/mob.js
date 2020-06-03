@@ -2,20 +2,10 @@
 const fetch = require('node-fetch').default;
 
 const getMobs = async () => {
-  const date = new Date().toLocaleDateString('en-CA');
+  const date = new Date().toISOString().slice(0, 10);
   const mobUrl = 'https://social.vehikl.com/social_mob/week';
   const mobData = await fetch(mobUrl).then((res) => res.json());
-  return mobData[date].map(
-    ({ id, topic, location, owner, start_time, end_time, attendees }) => ({
-      id,
-      topic,
-      location,
-      owner,
-      start_time,
-      end_time,
-      attendees
-    })
-  );
+  return mobData[date];
 };
 
 exports.handler = async function (event, context, callback) {
@@ -28,39 +18,53 @@ exports.handler = async function (event, context, callback) {
 
   try {
     const mobs = await getMobs();
+    let header = ':boom: *Social Mobs* happening today: :boom:';
 
-    const blocks = [
+    if (event.body !== '[object Object]') {
+      const slackRes = JSON.parse(
+        '{"' +
+          decodeURI(event.body)
+            .replace(/"/g, '\\"')
+            .replace(/&/g, '","')
+            .replace(/=/g, '":"') +
+          '"}'
+      );
+
+      header = `:boom: *${slackRes.user_name}* is wondering what _mobs_ are happening today: :boom:`;
+    }
+
+    const res = await fetch(
+      `https://hooks.slack.com/services/${process.env.PROD}`,
       {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: 'Social mobs for today:'
-        }
-      },
-      { type: 'divider' },
-      ...mobs.map((mob) => {
-        return {
-          type: 'section',
-          block_id: 1,
-          text: {
-            type: 'mrkdwn',
-            text: `*Organizer:* ${mob.owner?.name} (${mob.attendees.length}) \n ${mob.topic} \n ${mob.start_time} - ${mob.end_time} \n ${mob.location}`
-          },
-          accessory: {
-            type: 'image',
-            image_url: mob.owner.avatar,
-            alt_text: mob.owner.name
-          }
-        };
-      })
-    ];
+        method: 'POST',
+        body: JSON.stringify({
+          blocks: [
+            {
+              type: 'section',
+              text: { type: 'mrkdwn', text: header }
+            },
+            { type: 'divider' },
+            ...mobs.map((mob) => {
+              return {
+                type: 'section',
+                block_id: `${mob.id}`,
+                text: {
+                  type: 'mrkdwn',
+                  text: `:bulb: ${mob.topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+                },
+                accessory: {
+                  type: 'image',
+                  image_url: mob.owner.avatar,
+                  alt_text: mob.owner.name
+                }
+              };
+            })
+          ]
+        })
+      }
+    );
 
-    await fetch(`https://hooks.slack.com/services/${process.env.TESTING}`, {
-      method: 'POST',
-      body: JSON.stringify({ blocks })
-    });
-
-    callback(null, { statusCode: 200, body: `${JSON.stringify({ blocks })}` });
+    callback(null, { statusCode: 204, body: 'Success' });
   } catch (e) {
     callback(null, { statusCode: 500, body: 'Internal Server Error: ' + e });
   }

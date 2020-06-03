@@ -7,17 +7,21 @@ Using [Netlify Functions](https://docs.netlify.com/functions/overview/) it will 
 ```ts
 {
   type: 'section',
-  block_id: mob.id,
+  block_id: `${mob.id}`,
   text: {
     type: 'mrkdwn',
-    text: `*Organizer:* ${mob.owner?.name} (${mob.attendees.length}) \n ${mob.topic} \n ${mob.start_time} - ${mob.end_time} \n ${mob.location}`
+    text: `:bulb: ${mob.topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :round_pushpin: ${mob.location} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees`
   },
   accessory: {
     type: 'image',
-    image_url: mob.owner?.avatar,
-    alt_text: mob.owner?.name
+    image_url: mob.owner.avatar,
+    alt_text: mob.owner.name
   }
 }
 ```
 
-## Preview 
+## Preview
+
+<div align="center">
+  <img src="./assets/preview.png">
+</div>
