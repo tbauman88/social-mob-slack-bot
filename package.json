@@ -1,0 +1,21 @@
+{
+  "name": "social-mob-slack-bot",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "Tyler Bauman",
+  "main": "mob.js",
+  "keywords": [
+    "slack",
+    "js"
+  ],
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^2.52.0",
+    "prettier": "^2.0.4"
+  }
+}
