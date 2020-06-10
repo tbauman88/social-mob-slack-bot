@@ -12,6 +12,7 @@
     "dev": "netlify dev"
   },
   "dependencies": {
+    "cron": "^1.8.2",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
