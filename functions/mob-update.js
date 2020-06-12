@@ -22,15 +22,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `:zap: The _*${title}*_ mob has been updated recently. <https://social.vehikl.com/social_mob/${id}| View Mob>`
-            }
-          }
-        ]
+        text: `:zap: The _*${title}*_ mob has been updated recently. <https://social.vehikl.com/social_mob/${id}| View Mob>`
       })
     });
 

@@ -22,15 +22,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `:bomb:  The _*${topic}*_ mob has been deleted.`
-            }
-          }
-        ]
+        text: `:bomb:  The _*${topic}*_ mob has been deleted.`
       })
     });
 

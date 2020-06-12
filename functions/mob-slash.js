@@ -3,8 +3,8 @@ const fetch = require('node-fetch').default;
 
 const getMobs = async () => {
   const mobUrl = 'https://social.vehikl.com/social_mob/day';
-  const mob = await fetch(mobUrl).then((res) => res.json());
-  return mob;
+  const mobs = await fetch(mobUrl).then((res) => res.json());
+  return mobs;
 };
 
 exports.handler = async function (event, context, callback) {
