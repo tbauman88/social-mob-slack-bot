@@ -8,8 +8,8 @@ exports.handler = async function (event, context, callback) {
       body: 'Unsupported Request Method'
     };
   }
-  const mob = JSON.parse(event.body.trim());
-  const topic = mob.topic.replace(/\n|\r/g, '');
+  const { id, topic } = JSON.parse(event.body.trim());
+  const title = topic.replace(/\n|\r/g, '');
 
   callback(null, { statusCode: 204, body: 'Success' });
 
@@ -29,7 +29,7 @@ exports.handler = async function (event, context, callback) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `:zap: The _*${topic}*_ mob has been updated recently.`
+              text: `:zap: The _*${title}*_ mob has been updated recently. <https://social.vehikl.com/social_mob/${id}| View Mob>`
             }
           }
         ]

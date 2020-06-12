@@ -2,10 +2,9 @@
 const fetch = require('node-fetch').default;
 
 const getMobs = async () => {
-  const date = new Date().toISOString().slice(0, 10);
-  const mobUrl = 'https://social.vehikl.com/social_mob/week';
-  const mobData = await fetch(mobUrl).then((res) => res.json());
-  return mobData[date];
+  const mobUrl = 'https://social.vehikl.com/social_mob/day';
+  const mob = await fetch(mobUrl).then((res) => res.json());
+  return mob;
 };
 
 exports.handler = async function (event, context, callback) {

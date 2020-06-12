@@ -1,54 +1,10 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-const CronJob = require('cron').CronJob;
 
 const getMobs = async () => {
-  const date = new Date().toISOString().slice(0, 10);
-  const mobUrl = 'https://social.vehikl.com/social_mob/week';
-  const mobData = await fetch(mobUrl).then((res) => res.json());
-  return mobData[date];
-};
-
-const setMobReminder = (mobId, reminder) => {
-  const job = new CronJob(
-    reminder,
-    async () => {
-      await fetch(
-        `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-reminder?mob=${mobId}`,
-        {
-          method: 'POST'
-        }
-      );
-    },
-    null,
-    true,
-    'America/New_York'
-  );
-  job.start();
-};
-
-const convertTime12to24 = (mobId, day, time12h) => {
-  const [time, modifier] = time12h.split(' ');
-
-  let [hours, minutes] = time.split(':');
-
-  if (hours === '12') {
-    hours = '00';
-  }
-
-  if (modifier === 'pm') {
-    hours = parseInt(hours, 10) + 12;
-  }
-
-  if (minutes === '00') {
-    hours = parseInt(hours) - 1;
-    minutes = parseInt(minutes) + 50;
-  } else {
-    minutes = parseInt(minutes) - 10;
-  }
-
-  const reminder = new Date(`${day}T${hours}:${minutes}`);
-  return setMobReminder(mobId, reminder);
+  const mobUrl = 'https://social.vehikl.com/social_mob/day';
+  const mob = await fetch(mobUrl).then((res) => res.json());
+  return mob;
 };
 
 exports.handler = async function (event, context, callback) {
@@ -64,12 +20,6 @@ exports.handler = async function (event, context, callback) {
   try {
     const mobs = await getMobs();
     let header = ':boom: *Social Mobs* happening today: :boom:';
-
-    if (mobs.length > 0) {
-      mobs.map(({ id, date, start_time }) =>
-        convertTime12to24(id, date, start_time)
-      );
-    }
 
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
