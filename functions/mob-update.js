@@ -14,8 +14,6 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
-    let header = ':boom: *Social Mobs* happening today: :boom:';
-
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers: {

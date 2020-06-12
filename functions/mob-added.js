@@ -9,7 +9,7 @@ exports.handler = async function (event, context, callback) {
     };
   }
   const mob = JSON.parse(event.body.trim());
-  const topic = mob.topic.replace(/\n|\r/g, '');
+  const title = mob.topic.replace(/\n|\r/g, '');
 
   callback(null, { statusCode: 204, body: 'Success' });
 
@@ -27,7 +27,21 @@ exports.handler = async function (event, context, callback) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `:bomb:  The _*${topic}*_ mob has been deleted.`
+              text: `:boom: A new mob has been added for today :boom:`
+            }
+          },
+          { type: 'divider' },
+          {
+            type: 'section',
+            block_id: `${mob.id}`,
+            text: {
+              type: 'mrkdwn',
+              text: `:bulb: ${title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+            },
+            accessory: {
+              type: 'image',
+              image_url: mob.owner.avatar,
+              alt_text: mob.owner.name
             }
           }
         ]
