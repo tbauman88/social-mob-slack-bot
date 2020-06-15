@@ -3,9 +3,9 @@ const fetch = require('node-fetch').default;
 
 const getMobs = async (mobId) => {
   const date = new Date().toISOString().slice(0, 10);
-  const mobUrl = 'https://social.vehikl.com/social_mob/week';
-  const mobData = await fetch(mobUrl).then((res) => res.json());
-  return mobData[date].find((m) => m.id === mobId);
+  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
+  const mobs = await fetch(mobUrl).then((res) => res.json());
+  return mobs.find((m) => m.id === mobId);
 };
 
 const getMobAttendees = async (attendees) => {
@@ -19,10 +19,10 @@ const getMobAttendees = async (attendees) => {
 
   attendees.forEach((attendee) => {
     const person = users.find((p) => p.name === attendee);
-    person && slackUsers.push(person);
+    person && slackUsers.push(`<@${person.id}>`);
   });
 
-  return slackUsers;
+  return slackUsers.join(' ');
 };
 
 exports.handler = async function (event, context, callback) {
@@ -56,9 +56,7 @@ exports.handler = async function (event, context, callback) {
             block_id: mobId,
             text: {
               type: 'mrkdwn',
-              text: `This is a reminder the *_${topic}_* mob will start in 10 minutes. ${attendees.map(
-                (attendee) => `<@${attendee.id}>`
-              )}`
+              text: `This is a reminder the *_${topic}_* mob will start in 10 minutes ${attendees}`
             }
           }
         ]
