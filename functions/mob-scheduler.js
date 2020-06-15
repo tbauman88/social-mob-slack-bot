@@ -18,13 +18,6 @@ const getMobAttendees = async (attendees) => {
   return slackUsers.join(' ');
 };
 
-const getMob = async (id) => {
-  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
-  const mobs = await fetch(mobUrl).then((res) => res.json());
-  const { attendees, owner } = mobs.find((mob) => mob.id === id);
-  return [owner.name, ...attendees.map(({ name }) => name)];
-};
-
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
     return {
@@ -34,10 +27,11 @@ exports.handler = async function (event, context, callback) {
   }
 
   try {
-    const { id, time, topic } = JSON.parse(event.body);
-    const members = await getMob(id);
+    const { attendees: members, id, time, topic } = JSON.parse(event.body);
     const attendees = await getMobAttendees(members);
     const title = topic.replace(/\n|\r/g, '');
+
+    // TODO: #7 Mob scheduledMessage list updates when people join/leave @tbauman88
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',

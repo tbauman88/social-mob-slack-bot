@@ -13,6 +13,8 @@ exports.handler = async function (event, context, callback) {
 
   callback(null, { statusCode: 204, body: 'Success' });
 
+  // TODO: #8 Check scheduledMessages.list for updated mob and remove scheduledMessage and rerun mob-scheduler @tbauman88
+
   try {
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
