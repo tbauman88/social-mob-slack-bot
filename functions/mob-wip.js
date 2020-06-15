@@ -1,5 +1,6 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const CronJob = require('cron').CronJob;
 
 const getMobs = async () => {
   const mobUrl = 'https://social.vehikl.com/social_mobs/day';
@@ -27,8 +28,35 @@ const convertTime12to24 = (day, time12h) => {
     minutes = parseInt(minutes) - 10;
   }
 
-  const reminder = new Date(`${day}T${hours}:${minutes}`);
-  return reminder;
+  return new Date(`${day}T${hours}:${minutes}`);
+};
+
+const setMobReminder = (mobs, reminder) => {
+  const { attendees, date, id, owner, start_time, topic } = mobs;
+  const time = convertTime12to24(date, start_time);
+
+  const job = new CronJob(
+    time,
+    () => {
+      fetch(
+        `https://${process.env.NAME}.netlify.app/.netlify/funcstitions/mob-scheduler`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id,
+            topic,
+            time: convertTime12to24('2020-06-12', '3:30 pm'),
+            attendees: [owner.name, ...attendees.map(({ name }) => name)]
+          })
+        }
+      );
+    },
+    null,
+    true,
+    'America/New_York'
+  );
+  job.start();
 };
 
 exports.handler = async function (event, context, callback) {
@@ -46,20 +74,8 @@ exports.handler = async function (event, context, callback) {
     let header = ':boom: *Social Mobs* happening today: :boom:';
 
     if (mobs.length > 0) {
-      mobs.forEach(({ attendees, date, id, owner, start_time, topic }) => {
-        fetch(
-          `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id,
-              topic,
-              time: convertTime12to24(date, start_time),
-              attendees: [owner.name, ...attendees.map(({ name }) => name)]
-            })
-          }
-        );
+      mobs.forEach((mob) => {
+        setMobReminder(mob);
       });
     }
 

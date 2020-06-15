@@ -2,7 +2,7 @@
 const fetch = require('node-fetch').default;
 
 const getMobs = async () => {
-  const mobUrl = 'https://social.vehikl.com/social_mob/day';
+  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
   const mobs = await fetch(mobUrl).then((res) => res.json());
   return mobs;
 };
