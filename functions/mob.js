@@ -17,7 +17,7 @@ const convertTime12to24 = (day, time12h) => {
   }
 
   if (modifier === 'pm') {
-    hours = parseInt(hours, 10) + 12;
+    hours = parseInt(hours) + 16;
   }
 
   if (minutes === '00') {

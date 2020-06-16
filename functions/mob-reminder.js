@@ -50,16 +50,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        blocks: [
-          {
-            type: 'section',
-            block_id: mobId,
-            text: {
-              type: 'mrkdwn',
-              text: `This is a reminder the *_${topic}_* mob will start in 10 minutes ${attendees}`
-            }
-          }
-        ]
+        text: `This is a reminder the *_${topic}_* mob will start in 10 minutes ${attendees}`
       })
     });
 
