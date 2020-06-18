@@ -20,18 +20,13 @@ const getMobAttendees = async (attendees) => {
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 503,
-      body: 'Unsupported Request Method'
-    };
+    return { statusCode: 503, body: 'Unsupported Request Method' };
   }
 
   try {
     const { attendees: members, id, time, topic } = JSON.parse(event.body);
     const attendees = await getMobAttendees(members);
     const title = topic.replace(/\n|\r/g, '');
-
-    // TODO: #7 Mob scheduledMessage list updates when people join/leave @tbauman88
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',
@@ -45,6 +40,7 @@ exports.handler = async function (event, context, callback) {
         post_at: new Date(time).getTime() / 1000.0
       })
     });
+
 
     callback(null, { statusCode: 204, body: 'Success' });
   } catch (e) {
