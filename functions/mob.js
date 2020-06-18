@@ -33,10 +33,7 @@ const convertTime12to24 = (day, time12h) => {
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 503,
-      body: 'Unsupported Request Method'
-    };
+    return { statusCode: 503, body: 'Unsupported Request Method' };
   }
 
   callback(null, { statusCode: 204, body: 'Success' });
