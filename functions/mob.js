@@ -75,12 +75,13 @@ exports.handler = async function (event, context, callback) {
           },
           { type: 'divider' },
           ...mobs.map((mob) => {
+            const topic = mob.topic.split('\n')[0].trim();
             return {
               type: 'section',
               block_id: `${mob.id}`,
               text: {
                 type: 'mrkdwn',
-                text: `:bulb: ${mob.topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+                text: `:bulb: ${topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
               },
               accessory: {
                 type: 'image',
