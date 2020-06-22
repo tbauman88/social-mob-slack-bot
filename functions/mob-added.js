@@ -9,7 +9,7 @@ exports.handler = async function (event, context, callback) {
     };
   }
   const mob = JSON.parse(event.body.trim());
-  const title = mob.topic.replace(/\n|\r/g, '');
+  const title = mob.topic.split('\n')[0].trim();
 
   callback(null, { statusCode: 204, body: 'Success' });
 

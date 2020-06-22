@@ -53,8 +53,6 @@ exports.handler = async function (event, context, callback) {
     return { statusCode: 503, body: 'Unsupported Request Method' };
   }
 
-  callback(null, { statusCode: 204, body: 'Success' });
-
   try {
     const { attendees, date, id, owner, start_time, topic } = JSON.parse(
       event.body.trim()
@@ -75,6 +73,8 @@ exports.handler = async function (event, context, callback) {
         })
       }
     );
+
+    callback(null, { statusCode: 204, body: 'Success' });
   } catch (e) {
     callback(null, { statusCode: 500, body: 'Internal Server Error: ' + e });
   }

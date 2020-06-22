@@ -26,7 +26,7 @@ exports.handler = async function (event, context, callback) {
   try {
     const { attendees: members, id, time, topic } = JSON.parse(event.body);
     const attendees = await getMobAttendees(members);
-    const title = topic.replace(/\n|\r/g, '');
+    const title = topic.split('\n')[0].trim();
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',
@@ -40,7 +40,6 @@ exports.handler = async function (event, context, callback) {
         post_at: new Date(time).getTime() / 1000.0
       })
     });
-
 
     callback(null, { statusCode: 204, body: 'Success' });
   } catch (e) {
