@@ -40,7 +40,6 @@ exports.handler = async function (event, context, callback) {
     const mob = await getMobs(+mobId);
     const members = [mob.owner.name, ...mob.attendees.map(({ name }) => name)];
     const attendees = await getMobAttendees(members);
-    const topic = mob.topic.replace(/\n|\r/g, '');
 
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
@@ -50,7 +49,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `This is a reminder the *_${topic}_* mob will start in 10 minutes ${attendees}`
+        text: `This is a reminder the *_${mob.title}_* mob will start in 10 minutes ${attendees}`
       })
     });
 

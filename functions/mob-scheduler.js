@@ -24,9 +24,8 @@ exports.handler = async function (event, context, callback) {
   }
 
   try {
-    const { attendees: members, id, time, topic } = JSON.parse(event.body);
-    const attendees = await getMobAttendees(members);
-    const title = topic.split('\n')[0].trim();
+    const mob = JSON.parse(event.body);
+    const attendees = await getMobAttendees(mob.attendees);
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',
@@ -36,8 +35,8 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `This is a reminder the *_${title}_* mob will start in 10 minutes ${attendees}`,
-        post_at: new Date(time).getTime() / 1000.0
+        text: `This is a reminder the *_${mob.title}_* mob will start in 10 minutes ${attendees}`,
+        post_at: new Date(mob.time).getTime() / 1000.0
       })
     });
 

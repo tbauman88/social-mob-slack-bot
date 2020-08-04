@@ -1,11 +1,10 @@
 // @ts-check
 const fetch = require('node-fetch').default;
 
-const getScheduledMessages = async (topic) => {
+const getScheduledMessages = async (title) => {
   const url = `	https://slack.com/api/chat.scheduledMessages.list?token=${process.env.TOKEN}`;
   const { scheduled_messages } = await fetch(url).then((res) => res.json());
-  const slackMessageText = topic.replace(/\n|\r/g, '');
-  return scheduled_messages.find(({ text }) => text.includes(slackMessageText));
+  return scheduled_messages.find(({ text }) => text.includes(title));
 };
 
 const deleteScheduledMessage = (message) => {
@@ -54,10 +53,8 @@ exports.handler = async function (event, context, callback) {
   }
 
   try {
-    const { attendees, date, id, owner, start_time, topic } = JSON.parse(
-      event.body.trim()
-    );
-    const scheduledMessage = await getScheduledMessages(topic);
+    const mob = JSON.parse(event.body.trim());
+    const scheduledMessage = await getScheduledMessages(mob.title);
     deleteScheduledMessage(scheduledMessage);
 
     fetch(
@@ -66,10 +63,10 @@ exports.handler = async function (event, context, callback) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id,
-          topic,
-          time: convertTime12to24(date, start_time),
-          attendees: [owner.name, ...attendees.map(({ name }) => name)]
+          mob: mob.id,
+          title: mob.title,
+          time: convertTime12to24(mob.date, mob.start_time),
+          attendees: [mob.owner.name, ...mob.attendees.map(({ name }) => name)]
         })
       }
     );
