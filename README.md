@@ -10,7 +10,7 @@ Using [Netlify Functions](https://docs.netlify.com/functions/overview/) it will 
   block_id: `${mob.id}`,
   text: {
     type: 'mrkdwn',
-    text: `:bulb: ${mob.topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :round_pushpin: ${mob.location} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees`
+    text: `:bulb: ${mob.title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :round_pushpin: ${mob.location} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees`
   },
   accessory: {
     type: 'image',

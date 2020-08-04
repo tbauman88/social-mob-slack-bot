@@ -9,7 +9,6 @@ exports.handler = async function (event, context, callback) {
     };
   }
   const mob = JSON.parse(event.body.trim());
-  const topic = mob.topic.replace(/\n|\r/g, '');
 
   callback(null, { statusCode: 204, body: 'Success' });
 
@@ -24,7 +23,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `:bomb:  The _*${topic}*_ mob has been deleted.`
+        text: `:bomb:  The _*${mob.title}*_ mob has been deleted.`
       })
     });
 

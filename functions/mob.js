@@ -43,7 +43,7 @@ exports.handler = async function (event, context, callback) {
     let header = ':boom: *Social Mobs* happening today: :boom:';
 
     if (mobs.length > 0) {
-      mobs.forEach(({ attendees, date, id, owner, start_time, topic }) => {
+      mobs.forEach(({ attendees, date, id, owner, start_time, title }) => {
         fetch(
           `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
           {
@@ -51,12 +51,26 @@ exports.handler = async function (event, context, callback) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               id,
-              topic,
+              title,
               time: convertTime12to24(date, start_time),
               attendees: [owner.name, ...attendees.map(({ name }) => name)]
             })
           }
         );
+      });
+    }
+
+    if (mobs.length === 0) {
+      return fetch(`https://slack.com/api/chat.postMessage`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          channel: process.env.CHANNEL,
+          text: `No mobs are scheduled for today. _*Be Better*_ and <https://social.vehikl.com/| schedule a mob>`
+        })
       });
     }
 
@@ -74,22 +88,19 @@ exports.handler = async function (event, context, callback) {
             text: { type: 'mrkdwn', text: header }
           },
           { type: 'divider' },
-          ...mobs.map((mob) => {
-            const topic = mob.topic.split('\n')[0].trim();
-            return {
-              type: 'section',
-              block_id: `${mob.id}`,
-              text: {
-                type: 'mrkdwn',
-                text: `:bulb: ${topic} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
-              },
-              accessory: {
-                type: 'image',
-                image_url: mob.owner.avatar,
-                alt_text: mob.owner.name
-              }
-            };
-          })
+          ...mobs.map((mob) => ({
+            type: 'section',
+            block_id: `${mob.id}`,
+            text: {
+              type: 'mrkdwn',
+              text: `:bulb: ${mob.title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+            },
+            accessory: {
+              type: 'image',
+              image_url: mob.owner.avatar,
+              alt_text: mob.owner.name
+            }
+          }))
         ]
       })
     });
