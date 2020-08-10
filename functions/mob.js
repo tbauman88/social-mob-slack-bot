@@ -1,9 +1,12 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const { CHANNEL, MOBS_TOKEN, NAME, TOKEN } = process.env;
 
 const getMobs = async () => {
   const mobUrl = 'https://social.vehikl.com/social_mobs/day';
-  const mobs = await fetch(mobUrl).then((res) => res.json());
+  const mobs = await fetch(mobUrl, {
+    headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
+  }).then((res) => res.json());
   return mobs;
 };
 
@@ -41,47 +44,42 @@ exports.handler = async function (event, context, callback) {
   try {
     const mobs = await getMobs();
     let header = ':boom: *Social Mobs* happening today: :boom:';
-
-    if (mobs.length > 0) {
-      mobs.forEach(({ attendees, date, id, owner, start_time, title }) => {
-        fetch(
-          `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id,
-              title,
-              time: convertTime12to24(date, start_time),
-              attendees: [owner.name, ...attendees.map(({ name }) => name)]
-            })
-          }
-        );
-      });
-    }
+    const headers = {
+      Authorization: `Bearer ${TOKEN}`,
+      'Content-Type': 'application/json'
+    };
 
     if (mobs.length === 0) {
       return fetch(`https://slack.com/api/chat.postMessage`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.TOKEN}`,
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({
-          channel: process.env.CHANNEL,
+          channel: CHANNEL,
           text: `No mobs are scheduled for today. _*Be Better*_ and <https://social.vehikl.com/| schedule a mob>`
         })
       });
     }
 
+    if (mobs.length > 0) {
+      mobs.forEach(({ attendees, date, id, owner, start_time, title }) => {
+        fetch(`https://${NAME}.netlify.app/.netlify/functions/mob-scheduler`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id,
+            title,
+            time: convertTime12to24(date, start_time),
+            attendees: [owner.name, ...attendees.map(({ name }) => name)]
+          })
+        });
+      });
+    }
+
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
-        channel: process.env.CHANNEL,
+        channel: CHANNEL,
         blocks: [
           {
             type: 'section',
