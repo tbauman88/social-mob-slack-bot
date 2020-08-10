@@ -1,9 +1,12 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const { MOBS_TOKEN, TOKEN } = process.env;
 
 const getMobs = async () => {
   const mobUrl = 'https://social.vehikl.com/social_mobs/day';
-  const mobs = await fetch(mobUrl).then((res) => res.json());
+  const mobs = await fetch(mobUrl, {
+    headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
+  }).then((res) => res.json());
   return mobs;
 };
 
@@ -19,30 +22,24 @@ exports.handler = async function (event, context, callback) {
 
   try {
     const mobs = await getMobs();
-
-    const slackRes = JSON.parse(
-      '{"' +
-        decodeURI(event.body)
-          .replace(/"/g, '\\"')
-          .replace(/&/g, '","')
-          .replace(/=/g, '":"') +
-        '"}'
-    );
+    const parsed = new URLSearchParams(event.body);
+    const user = parsed.get('user_id');
+    const channel = parsed.get('channel_id');
 
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
+        Authorization: `Bearer ${TOKEN}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        channel: process.env.CHANNEL,
+        channel,
         blocks: [
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `:boom: *${slackRes.user_name}* is wondering what _mobs_ are happening today: :boom:`
+              text: `:boom: *<@${user}>* is wondering what _mobs_ are happening today :boom:`
             }
           },
           { type: 'divider' },
