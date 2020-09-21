@@ -8,11 +8,11 @@ exports.handler = async function (event, context, callback) {
       body: 'Unsupported Request Method'
     };
   }
-  const mob = JSON.parse(event.body.trim());
+  const session = JSON.parse(event.body.trim());
 
   callback(null, { statusCode: 204, body: 'Success' });
 
-  // TODO: #9 Check scheduledMessages.list for deleted mob and remove scheduledMessage @tbauman88
+  // TODO: #9 Check scheduledMessages.list for deleted session and remove scheduledMessage @tbauman88
 
   try {
     const res = await fetch('https://slack.com/api/chat.postMessage', {
@@ -23,7 +23,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `:bomb:  The _*${mob.title}*_ mob has been deleted.`
+        text: `:bomb:  The _*${session.title}*_ session has been deleted.`
       })
     });
 

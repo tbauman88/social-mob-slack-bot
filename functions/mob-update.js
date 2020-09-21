@@ -8,7 +8,7 @@ exports.handler = async function (event, context, callback) {
       body: 'Unsupported Request Method'
     };
   }
-  const mob = JSON.parse(event.body.trim());
+  const session = JSON.parse(event.body.trim());
 
   callback(null, { statusCode: 204, body: 'Success' });
 
@@ -23,7 +23,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `:zap: The _*${mob.title}*_ mob has been updated recently. <https://social.vehikl.com/social_mobs/${mob.id}| View Mob>`
+        text: `:zap: The _*${session.title}*_ mob has been updated recently. <https://social.vehikl.com/social_mobs/${session.id}| View Mob>`
       })
     });
 

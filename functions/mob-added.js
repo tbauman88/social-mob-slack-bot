@@ -8,7 +8,7 @@ exports.handler = async function (event, context, callback) {
       body: 'Unsupported Request Method'
     };
   }
-  const mob = JSON.parse(event.body.trim());
+  const session = JSON.parse(event.body.trim());
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
@@ -25,21 +25,21 @@ exports.handler = async function (event, context, callback) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: ':boom: A `NEW` mob has been added for today :boom:'
+              text: ':boom: A `NEW` session has been added for today :boom:'
             }
           },
           { type: 'divider' },
           {
             type: 'section',
-            block_id: `${mob.id}`,
+            block_id: `${session.id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: ${mob.title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :round_pushpin: ${mob.location}`
+              text: `:bulb: ${session.title} \n :watch: ${session.start_time} - ${session.end_time} \n :round_pushpin: ${session.location}`
             },
             accessory: {
               type: 'image',
-              image_url: mob.owner.avatar,
-              alt_text: mob.owner.name
+              image_url: session.owner.avatar,
+              alt_text: session.owner.name
             }
           }
         ]

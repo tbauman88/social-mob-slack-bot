@@ -2,12 +2,12 @@
 const fetch = require('node-fetch').default;
 const { CHANNEL, MOBS_TOKEN, NAME, TOKEN } = process.env;
 
-const getMobs = async () => {
-  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
-  const mobs = await fetch(mobUrl, {
+const getSessions = async () => {
+  const url = 'https://social.vehikl.com/social_mobs/day';
+  const sessions = await fetch(url, {
     headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
   }).then((res) => res.json());
-  return mobs;
+  return sessions;
 };
 
 const convertTime12to24 = (day, time12h) => {
@@ -42,25 +42,25 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
-    const mobs = await getMobs();
+    const sessions = await getSessions();
     const headers = {
       Authorization: `Bearer ${TOKEN}`,
       'Content-Type': 'application/json'
     };
 
-    if (mobs.length === 0) {
+    if (sessions.length === 0) {
       return fetch(`https://slack.com/api/chat.postMessage`, {
         method: 'POST',
         headers,
         body: JSON.stringify({
           channel: CHANNEL,
-          text: `No mobs are scheduled for today. _*Be Better*_ and <https://social.vehikl.com/| schedule a mob>`
+          text: `Nothing is scheduled for today. <https://social.vehikl.com/| _*Be Better*_ >`
         })
       });
     }
 
-    if (mobs.length > 0) {
-      mobs.forEach(({ attendees, date, id, owner, start_time, title }) => {
+    if (sessions.length > 0) {
+      sessions.forEach(({ attendees, date, id, owner, start_time, title }) => {
         fetch(`https://${NAME}.netlify.app/.netlify/functions/mob-scheduler`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -84,25 +84,25 @@ exports.handler = async function (event, context, callback) {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*_Colin_*: What social mobs do we have today Margo? \n *_Margo_*: Great question Colin!`
+              text: `*_Colin_*: What do we have today Margo? \n *_Margo_*: Great question Colin!`
             }
           },
           {
             type: 'section',
-            text: { type: 'mrkdwn', text: ':boom: *Social Mobs* happening today: :boom:' }
+            text: { type: 'mrkdwn', text: ':boom: Happening Today: :boom:' }
           },
           { type: 'divider' },
-          ...mobs.map((mob) => ({
+          ...sessions.map((session) => ({
             type: 'section',
-            block_id: `${mob.id}`,
+            block_id: `${session.id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: ${mob.title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+              text: `:bulb: ${session.title} \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette:  (${session.attendees.length}) Attendees \n :round_pushpin: ${session.location}`
             },
             accessory: {
               type: 'image',
-              image_url: mob.owner.avatar,
-              alt_text: mob.owner.name
+              image_url: session.owner.avatar,
+              alt_text: session.owner.name
             }
           }))
         ]

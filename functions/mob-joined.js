@@ -53,20 +53,20 @@ exports.handler = async function (event, context, callback) {
   }
 
   try {
-    const mob = JSON.parse(event.body.trim());
-    const scheduledMessage = await getScheduledMessages(mob.title);
+    const session = JSON.parse(event.body.trim());
+    const scheduledMessage = await getScheduledMessages(session.title);
     deleteScheduledMessage(scheduledMessage);
 
     fetch(
-      `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
+      `https://${process.env.NAME}.netlify.app/.netlify/functions/session-scheduler`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          mob: mob.id,
-          title: mob.title,
-          time: convertTime12to24(mob.date, mob.start_time),
-          attendees: [mob.owner.name, ...mob.attendees.map(({ name }) => name)]
+          session: session.id,
+          title: session.title,
+          time: convertTime12to24(session.date, session.start_time),
+          attendees: [session.owner.name, ...session.attendees.map(({ name }) => name)]
         })
       }
     );
