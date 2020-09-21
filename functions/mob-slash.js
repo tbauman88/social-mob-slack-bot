@@ -1,13 +1,13 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-const { MOBS_TOKEN, TOKEN } = process.env;
+const { sessionS_TOKEN, TOKEN } = process.env;
 
-const getMobs = async () => {
-  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
-  const mobs = await fetch(mobUrl, {
-    headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
+const getSessions = async () => {
+  const url = 'https://social.vehikl.com/social_sessions/day';
+  const sessions = await fetch(url, {
+    headers: { Authorization: `Bearer ${sessionS_TOKEN}` }
   }).then((res) => res.json());
-  return mobs;
+  return sessions;
 };
 
 exports.handler = async function (event, context, callback) {
@@ -21,7 +21,7 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
-    const mobs = await getMobs();
+    const sessions = await getSessions();
     const parsed = new URLSearchParams(event.body);
     const user = parsed.get('user_id');
     const channel = parsed.get('channel_id');
@@ -39,22 +39,22 @@ exports.handler = async function (event, context, callback) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `:boom: *<@${user}>* is wondering what _mobs_ are happening today :boom:`
+              text: `:boom: *<@${user}>* is wondering what _sessions_ are happening today :boom:`
             }
           },
           { type: 'divider' },
-          ...mobs.map((mob) => {
+          ...sessions.map((session) => {
             return {
               type: 'section',
-              block_id: `${mob.id}`,
+              block_id: `${session.id}`,
               text: {
                 type: 'mrkdwn',
-                text: `:bulb: ${mob.title} \n :watch: ${mob.start_time} - ${mob.end_time} \n :busts_in_silhouette:  (${mob.attendees.length}) Attendees \n :round_pushpin: ${mob.location}`
+                text: `:bulb: ${session.title} \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette:  (${session.attendees.length}) Attendees \n :round_pushpin: ${session.location}`
               },
               accessory: {
                 type: 'image',
-                image_url: mob.owner.avatar,
-                alt_text: mob.owner.name
+                image_url: session.owner.avatar,
+                alt_text: session.owner.name
               }
             };
           })
