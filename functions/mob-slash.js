@@ -3,7 +3,7 @@ const fetch = require('node-fetch').default;
 const { sessionS_TOKEN, TOKEN } = process.env;
 
 const getSessions = async () => {
-  const url = 'https://social.vehikl.com/social_sessions/day';
+  const url = 'https://growth.vehikl.com/social_sessions/day';
   const sessions = await fetch(url, {
     headers: { Authorization: `Bearer ${sessionS_TOKEN}` }
   }).then((res) => res.json());

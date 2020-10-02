@@ -3,7 +3,7 @@ const fetch = require('node-fetch').default;
 
 const getMobs = async (mobId) => {
   const date = new Date().toISOString().slice(0, 10);
-  const mobUrl = 'https://social.vehikl.com/social_mobs/day';
+  const mobUrl = 'https://growth.vehikl.com/social_mobs/day';
   const mobs = await fetch(mobUrl).then((res) => res.json());
   return mobs.find((m) => m.id === mobId);
 };

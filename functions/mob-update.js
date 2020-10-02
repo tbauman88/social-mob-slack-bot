@@ -23,7 +23,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: process.env.CHANNEL,
-        text: `:zap: The _*${session.title}*_ mob has been updated recently. <https://social.vehikl.com/social_mobs/${session.id}| View Mob>`
+        text: `:zap: The _*${session.title}*_ mob has been updated recently. <https://growth.vehikl.com/social_mobs/${session.id}| View Mob>`
       })
     });
 

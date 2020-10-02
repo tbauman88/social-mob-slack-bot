@@ -3,7 +3,7 @@ const fetch = require('node-fetch').default;
 const { CHANNEL, MOBS_TOKEN, NAME, TOKEN } = process.env;
 
 const getSessions = async () => {
-  const url = 'https://social.vehikl.com/social_mobs/day';
+  const url = 'https://growth.vehikl.com/social_mobs/day';
   const sessions = await fetch(url, {
     headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
   }).then((res) => res.json());
@@ -54,7 +54,7 @@ exports.handler = async function (event, context, callback) {
         headers,
         body: JSON.stringify({
           channel: CHANNEL,
-          text: `Nothing is scheduled for today. <https://social.vehikl.com/| _*Be Better*_ >`
+          text: `Nothing is scheduled for today. <https://growth.vehikl.com/| _*Be Better*_ >`
         })
       });
     }
@@ -84,7 +84,7 @@ exports.handler = async function (event, context, callback) {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*_Colin_*: What growth sessions do we have today Margo? \n *_Margo_*: Great question Colin!`
+              text: `*_Colin_*: Lets talk growth, what do we have today Margo? \n *_Margo_*: Great question Colin!`
             }
           },
           {
