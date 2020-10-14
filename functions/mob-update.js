@@ -13,22 +13,4 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   // TODO: #8 Check scheduledMessages.list for updated mob and remove scheduledMessage and rerun mob-scheduler @tbauman88
-
-  try {
-    const res = await fetch('https://slack.com/api/chat.postMessage', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        channel: process.env.CHANNEL,
-        text: `:zap: The _*${session.title}*_ mob has been updated recently. <https://growth.vehikl.com/social_mobs/${session.id}| View Mob>`
-      })
-    });
-
-    if (!res.ok) throw new Error(res.statusText);
-  } catch (e) {
-    callback(null, { statusCode: 500, body: 'Internal Server Error: ' + e });
-  }
 };
