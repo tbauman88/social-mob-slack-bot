@@ -92,17 +92,19 @@ exports.handler = async function (event, context, callback) {
             text: { type: 'mrkdwn', text: ':boom: Growth sessions happening today: :boom:' }
           },
           { type: 'divider' },
-          ...sessions.map((session) => ({
+          ...sessions.map(({
+            id, title, start_time, end_time, attendees, attendee_limit, location, owner
+          }) => ({
             type: 'section',
-            block_id: `${session.id}`,
+            block_id: `${id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: ${session.title} \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette:  (${session.attendees.length}) Attendees \n :round_pushpin: ${session.location}`
+              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette:  ${attendees.length} / ${attendee_limit || 'nth number'} Attendees \n :round_pushpin: ${location}`
             },
             accessory: {
               type: 'image',
-              image_url: session.owner.avatar,
-              alt_text: session.owner.name
+              image_url: owner.avatar,
+              alt_text: owner.name
             }
           }))
         ]
