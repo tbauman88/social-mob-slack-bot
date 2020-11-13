@@ -33,7 +33,8 @@ const convertTime12to24 = (day, time12h) => {
   }
 
   if (modifier === 'pm') {
-    hours = parseInt(hours) + 16;
+    const daylightSavings = 16 + 1;
+    hours = parseInt(hours) + daylightSavings;
   }
 
   if (minutes === '00') {
