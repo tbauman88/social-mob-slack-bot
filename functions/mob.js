@@ -1,7 +1,7 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const helpers = require('../helpers.js');
 const { CHANNEL, NAME, TOKEN } = process.env;
-import { convertTime12to24,  getSessions } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -11,7 +11,7 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
-    const sessions = await getSessions();
+    const sessions = await helpers.getSessions();
     const headers = {
       Authorization: `Bearer ${TOKEN}`,
       'Content-Type': 'application/json'
@@ -36,7 +36,7 @@ exports.handler = async function (event, context, callback) {
           body: JSON.stringify({
             id,
             title,
-            time: convertTime12to24(date, start_time),
+            time: helpers.convertTime12to24(date, start_time),
             attendees: [owner.name, ...attendees.map(({ name }) => name)]
           })
         });
@@ -68,7 +68,7 @@ exports.handler = async function (event, context, callback) {
             block_id: `${id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette:  ${attendees.length}/${attendee_limit || '–'} Attendees \n :round_pushpin: ${location}`
+              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette: ${attendees.length}${attendee_limit ? '/' + attendee_limit : ''} Attendees \n :round_pushpin: ${location}`
             },
             accessory: {
               type: 'image',

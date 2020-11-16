@@ -1,16 +1,15 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const helpers = require('../helpers.js');
 const { TOKEN } = process.env;
-import {  getSessions } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 503, body: 'Unsupported Request Method'};
   }
 
-  callback(null, { statusCode: 204, body: 'Success' });
   try {
-    const sessions = await getSessions();
+    const sessions = await helpers.getSessions();
     const parsed = new URLSearchParams(event.body);
     const user = parsed.get('user_id');
     const channel = parsed.get('channel_id');
@@ -51,6 +50,7 @@ exports.handler = async function (event, context, callback) {
       })
     });
 
+    callback(null, { statusCode: 204, body: '' });
     if (!res.ok) throw new Error(res.statusText);
   } catch (e) {
     callback(null, { statusCode: 500, body: 'Internal Server Error: ' + e });

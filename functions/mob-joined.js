@@ -1,6 +1,6 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-import { convertTime12to24, deleteScheduledMessage, getScheduledMessages } from '../helpers'
+const helpers = require('../helpers.js');
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -9,8 +9,8 @@ exports.handler = async function (event, context, callback) {
 
   try {
     const session = JSON.parse(event.body.trim());
-    const scheduledMessage = await getScheduledMessages(session.title);
-    deleteScheduledMessage(scheduledMessage);
+    const scheduledMessage = await helpers.getScheduledMessages(session.title);
+    helpers.deleteScheduledMessage(scheduledMessage);
 
     fetch(
       `https://${process.env.NAME}.netlify.app/.netlify/functions/session-scheduler`,
@@ -20,7 +20,7 @@ exports.handler = async function (event, context, callback) {
         body: JSON.stringify({
           session: session.id,
           title: session.title,
-          time: convertTime12to24(session.date, session.start_time),
+          time: helpers.convertTime12to24(session.date, session.start_time),
           attendees: [session.owner.name, ...session.attendees.map(({ name }) => name)]
         })
       }

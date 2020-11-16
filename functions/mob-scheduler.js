@@ -1,7 +1,7 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const helpers = require('../helpers.js');
 const { TOKEN, CHANNEL } = process.env
-import { getMobAttendees } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -10,7 +10,7 @@ exports.handler = async function (event, context, callback) {
 
   try {
     const session = JSON.parse(event.body);
-    const attendees = await getMobAttendees(session.attendees);
+    const attendees = await helpers.getMobAttendees(session.attendees);
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',

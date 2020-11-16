@@ -3,10 +3,7 @@ const fetch = require('node-fetch').default;
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 503,
-      body: 'Unsupported Request Method'
-    };
+    return { statusCode: 503, body: 'Unsupported Request Method' };
   }
   const session = JSON.parse(event.body.trim());
 

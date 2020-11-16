@@ -1,20 +1,17 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const helpers = require('../helpers.js');
 const { TOKEN, CHANNEL } = process.env
-import { deleteScheduledMessage, getScheduledMessages } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 503,
-      body: 'Unsupported Request Method'
-    };
+    return { statusCode: 503, body: 'Unsupported Request Method' };
   }
   
   try {
     const session = JSON.parse(event.body.trim());
-    const scheduledMessage = await getScheduledMessages(session.title);
-    deleteScheduledMessage(scheduledMessage);
+    const scheduledMessage = await helpers.getScheduledMessages(session.title);
+    helpers.deleteScheduledMessage(scheduledMessage);
     
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
