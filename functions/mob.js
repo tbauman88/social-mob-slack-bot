@@ -1,39 +1,7 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-const { CHANNEL, MOBS_TOKEN, NAME, TOKEN } = process.env;
-
-const getSessions = async () => {
-  const url = 'https://growth.vehikl.com/social_mobs/day';
-  const sessions = await fetch(url, {
-    headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
-  }).then((res) => res.json());
-  return sessions;
-};
-
-const convertTime12to24 = (day, time12h) => {
-  const [time, modifier] = time12h.split(' ');
-
-  let [hours, minutes] = time.split(':');
-
-  if (hours === '12') {
-    hours = '00';
-  }
-
-  if (modifier === 'pm') {
-    const daylightSavings = 16 + 1;
-    hours = parseInt(hours) + daylightSavings;
-  }
-
-  if (minutes === '00') {
-    hours = parseInt(hours);
-    minutes = parseInt(minutes) + 50;
-  } else {
-    minutes = parseInt(minutes) - 10;
-  }
-
-  const reminder = new Date(`${day}T${hours}:${minutes}`);
-  return reminder;
-};
+const { CHANNEL, NAME, TOKEN } = process.env;
+import { convertTime12to24,  getSessions } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -100,7 +68,7 @@ exports.handler = async function (event, context, callback) {
             block_id: `${id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette:  ${attendees.length} / ${attendee_limit || 'nth number'} Attendees \n :round_pushpin: ${location}`
+              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette:  ${attendees.length}/${attendee_limit || '–'} Attendees \n :round_pushpin: ${location}`
             },
             accessory: {
               type: 'image',

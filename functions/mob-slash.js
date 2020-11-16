@@ -1,25 +1,14 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-const { sessionS_TOKEN, TOKEN } = process.env;
-
-const getSessions = async () => {
-  const url = 'https://growth.vehikl.com/social_sessions/day';
-  const sessions = await fetch(url, {
-    headers: { Authorization: `Bearer ${sessionS_TOKEN}` }
-  }).then((res) => res.json());
-  return sessions;
-};
+const { TOKEN } = process.env;
+import {  getSessions } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 503,
-      body: 'Unsupported Request Method'
-    };
+    return { statusCode: 503, body: 'Unsupported Request Method'};
   }
 
   callback(null, { statusCode: 204, body: 'Success' });
-
   try {
     const sessions = await getSessions();
     const parsed = new URLSearchParams(event.body);

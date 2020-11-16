@@ -1,22 +1,7 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-
-const getAttendees = async (attendees) => {
-  const url = `https://slack.com/api/users.list?token=${process.env.TOKEN}`;
-  const { members } = await fetch(url).then((res) => res.json());
-  const users = members
-    .filter((m) => !m.deleted && !m.is_bot && !m.is_restricted)
-    .map(({ real_name, id }) => ({ id, name: real_name }));
-
-  let slackUsers = [];
-
-  attendees.forEach((attendee) => {
-    const person = users.find((p) => p.name === attendee);
-    person && slackUsers.push(`<@${person.id}>`);
-  });
-
-  return slackUsers.join(' ');
-};
+const { TOKEN, CHANNEL } = process.env
+import { getMobAttendees } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -25,16 +10,16 @@ exports.handler = async function (event, context, callback) {
 
   try {
     const session = JSON.parse(event.body);
-    const attendees = await getAttendees(session.attendees);
+    const attendees = await getMobAttendees(session.attendees);
 
     const res = await fetch('https://slack.com/api/chat.scheduleMessage', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
+        Authorization: `Bearer ${TOKEN}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        channel: process.env.CHANNEL,
+        channel: CHANNEL,
         text: `This is a reminder *_${session.title}_* will start in 10 minutes ${attendees}`,
         post_at: new Date(session.time).getTime() / 1000.0
       })

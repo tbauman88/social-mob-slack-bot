@@ -1,52 +1,6 @@
 // @ts-check
 const fetch = require('node-fetch').default;
-
-const getScheduledMessages = async (title) => {
-  const url = `	https://slack.com/api/chat.scheduledMessages.list?token=${process.env.TOKEN}`;
-  const { scheduled_messages } = await fetch(url).then((res) => res.json());
-  return scheduled_messages.find(({ text }) => text.includes(title));
-};
-
-const deleteScheduledMessage = (message) => {
-  const url = 'https://slack.com/api/chat.deleteScheduledMessage';
-
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.TOKEN}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      channel: process.env.CHANNEL,
-      scheduled_message_id: message.id
-    })
-  }).then((res) => res.json());
-};
-
-const convertTime12to24 = (day, time12h) => {
-  const [time, modifier] = time12h.split(' ');
-
-  let [hours, minutes] = time.split(':');
-
-  if (hours === '12') {
-    hours = '00';
-  }
-
-  if (modifier === 'pm') {
-    const daylightSavings = 16 + 1;
-    hours = parseInt(hours) + daylightSavings;
-  }
-
-  if (minutes === '00') {
-    hours = parseInt(hours);
-    minutes = parseInt(minutes) + 50;
-  } else {
-    minutes = parseInt(minutes) - 10;
-  }
-
-  const reminder = new Date(`${day}T${hours}:${minutes}`);
-  return reminder;
-};
+import { convertTime12to24, deleteScheduledMessage, getScheduledMessages } from '../helpers'
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {

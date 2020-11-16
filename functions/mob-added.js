@@ -1,5 +1,6 @@
 // @ts-check
 const fetch = require('node-fetch').default;
+const { CHANNEL, TOKEN } = process.env;
 
 exports.handler = async function (event, context, callback) {
   if (event.httpMethod !== 'POST') {
@@ -15,11 +16,11 @@ exports.handler = async function (event, context, callback) {
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
+        Authorization: `Bearer ${TOKEN}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        channel: process.env.CHANNEL,
+        channel: CHANNEL,
         blocks: [
           {
             type: 'section',
@@ -34,7 +35,7 @@ exports.handler = async function (event, context, callback) {
             block_id: `${session.id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: ${session.title} \n :watch: ${session.start_time} - ${session.end_time} \n :round_pushpin: ${session.location}`
+              text: `:bulb: <https://growth.vehikl.com/social_mobs/${session.id}| ${session.title}> \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette: ${session.attendee_limit || 'nth of'} attendees available \n :round_pushpin: ${session.location}`
             },
             accessory: {
               type: 'image',
