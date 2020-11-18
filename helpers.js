@@ -17,7 +17,7 @@ module.exports = {
     }
   
     if (minutes === '00') {
-      hours = parseInt(hours);
+      hours = parseInt(16);
       minutes = parseInt(minutes) + 50;
     } else {
       minutes = parseInt(minutes) - 10;
