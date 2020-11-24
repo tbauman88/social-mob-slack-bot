@@ -12,14 +12,13 @@ module.exports = {
     }
   
     if (modifier === 'pm') {
-      const daylightSavings = 16 + 1;
-      hours = parseInt(hours) + daylightSavings;
+      hours = parseInt(hours) + 16;
     }
   
     if (minutes === '00') {
-      hours = parseInt(16);
       minutes = parseInt(minutes) + 50;
     } else {
+      hours = hours + 1
       minutes = parseInt(minutes) - 10;
     }
   
