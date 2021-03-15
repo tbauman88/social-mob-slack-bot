@@ -35,7 +35,7 @@ exports.handler = async function (event, context, callback) {
             block_id: `${session.id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: <https://growth.vehikl.com/social_mobs/${session.id}| ${session.title}> \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette: ${session.attendee_limit || 'nth of'} attendees available \n :round_pushpin: ${session.location}`
+              text: `:bulb: <https://growth.vehikl.com/growth_sessions/${session.id}| ${session.title}> \n :watch: ${session.start_time} - ${session.end_time} \n :busts_in_silhouette: ${session.attendee_limit || 'nth of'} attendees available \n :round_pushpin: ${session.location}`
             },
             accessory: {
               type: 'image',

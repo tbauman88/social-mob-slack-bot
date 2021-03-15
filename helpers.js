@@ -49,7 +49,7 @@ module.exports = {
   
   getMobs: async (mobId) => {
     const date = new Date().toISOString().slice(0, 10);
-    const mobUrl = 'https://growth.vehikl.com/social_mobs/day';
+    const mobUrl = 'https://growth.vehikl.com/growth_sessions/day';
     const mobs = await fetch(mobUrl).then((res) => res.json());
     return mobs.find((m) => m.id === mobId);
   },
@@ -73,7 +73,7 @@ module.exports = {
   },
   
   getSessions: async () => {
-    const url = 'https://growth.vehikl.com/social_mobs/day';
+    const url = 'https://growth.vehikl.com/growth_sessions/day';
     const sessions = await fetch(url, {
       headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
     }).then((res) => res.json());

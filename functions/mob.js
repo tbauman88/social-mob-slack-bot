@@ -68,7 +68,7 @@ exports.handler = async function (event, context, callback) {
             block_id: `${id}`,
             text: {
               type: 'mrkdwn',
-              text: `:bulb: <https://growth.vehikl.com/social_mobs/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette: ${attendees.length}${attendee_limit ? '/' + attendee_limit : ''} Attendees \n :round_pushpin: ${location}`
+              text: `:bulb: <https://growth.vehikl.com/growth_sessions/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette: ${attendees.length}${attendee_limit ? '/' + attendee_limit : ''} Attendees \n :round_pushpin: ${location}`
             },
             accessory: {
               type: 'image',
