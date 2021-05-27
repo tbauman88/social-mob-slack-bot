@@ -15,13 +15,6 @@ module.exports = {
       hours = parseInt(hours) + 16;
     }
   
-    if (minutes === '00') {
-      minutes = parseInt(minutes) + 50;
-    } else {
-      // hours = hours + 1
-      minutes = parseInt(minutes) - 10;
-    }
-  
     return new Date(`${day}T${hours}:${minutes}`);
   },
   

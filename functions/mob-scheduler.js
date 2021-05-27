@@ -20,7 +20,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: CHANNEL,
-        text: `This is a reminder *_${session.title}_* will start in 10 minutes ${attendees}`,
+        text: `This is a reminder *_${session.title}_* growth session is starting now! ${attendees}`,
         post_at: new Date(session.time).getTime() / 1000.0
       })
     });
