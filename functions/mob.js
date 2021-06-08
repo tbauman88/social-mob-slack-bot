@@ -43,41 +43,67 @@ exports.handler = async function (event, context, callback) {
       });
     }
 
+    const blocks = sessions.map(({ id, title, start_time, end_time, attendees, attendee_limit, location, owner, topic }) => {
+      const people = attendee_limit != null && `${attendees.length}/${attendee_limit} Attendees`
+
+      return ([
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: title,
+            emoji: true
+          }
+        },
+        {
+          type: "section",
+          block_id: `${id}`,
+          text: {
+            type: "mrkdwn",
+            text: `Hosted by: \n ${owner.name} \n ${start_time} - ${end_time} \n ${people}`
+          },
+          "accessory": {
+            type: "image",
+            "image_url": owner.avatar,
+            "alt_text": owner.name
+          }
+        },
+        {
+          type: "context",
+          "elements": [
+            {
+              type: "plain_text",
+              text: topic,
+            }
+          ]
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `:round_pushpin: ${location}`
+          },
+          "accessory": {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: "Join Growth Session",
+            },
+            "value": "click_me_123",
+            "url": `https://growth.vehikl.com/growth_sessions/${id}`,
+            "action_id": "button-action"
+          }
+        },
+        {
+          type: "divider"
+        }
+      ])
+    })
+
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        channel: CHANNEL,
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `*_Colin_*: Lets talk growth, what do we have today Margo? \n *_Margo_*: Great question Colin!`
-            }
-          },
-          {
-            type: 'section',
-            text: { type: 'mrkdwn', text: ':boom: Growth sessions happening today: :boom:' }
-          },
-          { type: 'divider' },
-          ...sessions.map(({
-            id, title, start_time, end_time, attendees, attendee_limit, location, owner
-          }) => ({
-            type: 'section',
-            block_id: `${id}`,
-            text: {
-              type: 'mrkdwn',
-              text: `:bulb: <https://growth.vehikl.com/growth_sessions/${id}| ${title}>  \n :watch: ${start_time} - ${end_time} \n :busts_in_silhouette: ${attendees.length}${attendee_limit ? '/' + attendee_limit : ''} Attendees \n :round_pushpin: ${location}`
-            },
-            accessory: {
-              type: 'image',
-              image_url: owner.avatar,
-              alt_text: owner.name
-            }
-          }))
-        ]
-      })
+      body: JSON.stringify({ channel: CHANNEL, ...blocks })
     });
 
     if (!res.ok) throw new Error(res.statusText);

@@ -41,7 +41,6 @@ module.exports = {
   },
   
   getMobs: async (mobId) => {
-    const date = new Date().toISOString().slice(0, 10);
     const mobUrl = 'https://growth.vehikl.com/growth_sessions/day';
     const mobs = await fetch(mobUrl).then((res) => res.json());
     return mobs.find((m) => m.id === mobId);
@@ -57,8 +56,7 @@ module.exports = {
     let slackUsers = [];
   
     attendees.forEach((attendee) => {
-      const person = users.find(({name}) => 
-        name.toLowerCase() === attendee.toLowerCase());
+      const person = users.find(({name}) => name.toLowerCase() === attendee.toLowerCase());
       person && slackUsers.push(`<@${person.id}>`);
     });
   
