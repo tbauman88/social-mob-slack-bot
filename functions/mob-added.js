@@ -14,7 +14,7 @@ exports.handler = async function (event, context, callback) {
   const session = JSON.parse(event.body.trim());
   callback(null, { statusCode: 204, body: 'Success' });
 
-  const attendees = session.attendee_limit != null `${session.attendee_limit} attendees available`
+  const attendees = session.attendee_limit != null ? `${session.attendee_limit} attendees available` : 'Unlmited attendees available'
 
   try {
     fetch(
@@ -74,7 +74,7 @@ exports.handler = async function (event, context, callback) {
           {
             type: "section",
             text: {
-              type: "mrkdwn",
+              type: "plain_text",
               text: `:round_pushpin: ${session.location}`
             },
             "accessory": {

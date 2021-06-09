@@ -80,7 +80,7 @@ exports.handler = async function (event, context, callback) {
         {
           type: "section",
           text: {
-            type: "mrkdwn",
+            type: "plain_text",
             text: `:round_pushpin: ${location}`
           },
           "accessory": {
@@ -103,7 +103,7 @@ exports.handler = async function (event, context, callback) {
     const res = await fetch('https://slack.com/api/chat.postMessage', {
       method: 'POST',
       headers,
-      body: JSON.stringify({ channel: CHANNEL, ...blocks })
+      body: JSON.stringify({ channel: CHANNEL, blocks: blocks.flat(1)  })
     });
 
     if (!res.ok) throw new Error(res.statusText);
