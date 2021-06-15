@@ -63,12 +63,21 @@ module.exports = {
     return slackUsers.join(' ');
   },
   
-  getSessions: async () => {
+  getAfternoonSessions: async () => {
     const url = 'https://growth.vehikl.com/growth_sessions/day';
     const sessions = await fetch(url, {
       headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
     }).then((res) => res.json());
-    return sessions;
+    return sessions.filter(s => s.start_time.includes('pm'));
+  },
+
+  getMorningSessions: async () => {
+    const url = 'https://growth.vehikl.com/growth_sessions/day';
+    const sessions = await fetch(url, {
+      headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
+    }).then((res) => res.json());
+    
+    return sessions.filter(s => s.start_time.includes('am'));
   }
 }
 

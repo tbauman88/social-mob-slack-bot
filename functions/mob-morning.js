@@ -11,7 +11,7 @@ exports.handler = async function (event, context, callback) {
   callback(null, { statusCode: 204, body: 'Success' });
 
   try {
-    const sessions = await helpers.getAfternoonSessions();
+    const sessions = await helpers.getMorningSessions();
     const headers = {
       Authorization: `Bearer ${TOKEN}`,
       'Content-Type': 'application/json'

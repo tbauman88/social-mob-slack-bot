@@ -9,7 +9,7 @@ exports.handler = async function (event, context, callback) {
   }
 
   try {
-    const sessions = await helpers.getSessions();
+    const sessions = await helpers.getAfternoonSessions();
     const parsed = new URLSearchParams(event.body);
     const user = parsed.get('user_id');
     const channel = parsed.get('channel_id');
