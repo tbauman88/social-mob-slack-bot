@@ -10,19 +10,19 @@ exports.handler = async function (event, context, callback) {
   const session = JSON.parse(event.body.trim());
   const attendees = session.attendee_limit != null 
     ? `${session.attendee_limit} attendees available` 
-    : 'Unlmited attendees available'
+    : 'Unlimited attendees available'
 
   try {
-    fetch(`https://${NAME}.netlify.app/.netlify/functions/mob-scheduler`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: session.id,
-        title: session.title,
-        time: helpers.convertTime12to24(session.date, session.start_time),
-        attendees: [session.owner.name, ...session.attendees.map(({ name }) => name)]
-      })
-    })
+    // fetch(`https://${NAME}.netlify.app/.netlify/functions/mob-scheduler`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     id: session.id,
+    //     title: session.title,
+    //     time: helpers.convertTime12to24(session.date, session.start_time),
+    //     attendees: [session.owner.name, ...session.attendees.map(({ name }) => name)]
+    //   })
+    // })
     
     const headers = { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' };
     const blocks = [

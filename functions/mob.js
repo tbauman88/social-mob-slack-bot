@@ -35,7 +35,7 @@ exports.handler = async function (event, context, callback) {
     }
 
     const blocks = sessions.map(({ id, title, start_time, end_time, attendees, attendee_limit, location, owner, topic }) => {
-      const people = attendee_limit != null ? `${attendees.length}/${attendee_limit} Attendees` : 'Unlmited attendees available'
+      const people = attendee_limit != null ? `${attendees.length}/${attendee_limit} Attendees` : 'Unlimited attendees available'
 
       return ([
         {

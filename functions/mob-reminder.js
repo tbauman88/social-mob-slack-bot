@@ -24,7 +24,7 @@ exports.handler = async function (event, context, callback) {
       },
       body: JSON.stringify({
         channel: CHANNEL,
-        text: `This is a reminder the *_${mob.title}_* growth session is starting now! ${attendees}`
+        text: `This is a reminder the *_${mob.title}_* growth session is starting now! ${attendees} ${mob.location}`
       })
     });
 
