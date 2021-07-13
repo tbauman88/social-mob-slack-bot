@@ -47,18 +47,19 @@ module.exports = {
   },
   
   getMobAttendees: async (attendees) => {
-    const url = `https://slack.com/api/users.list?token=${TOKEN}`;
-    const { members } = await fetch(url).then((res) => res.json());
-    const users = members
-      .filter((m) => !m.deleted && !m.is_bot && !m.is_restricted)
+    const response = await fetch(`https://slack.com/api/users.list?token=${TOKEN}`);
+    const data = await response.json();
+
+    let slackUsers = [];
+    const users = data.members
+      .filter(member => !member.deleted && !member.is_bot && !member.is_restricted)
       .map(({ real_name, id }) => ({ id, name: real_name }));
   
-    let slackUsers = [];
-  
-    attendees.forEach((attendee) => {
-      const person = users.find(({name}) => name.toLowerCase() === attendee.toLowerCase());
-      person && slackUsers.push(`<@${person.id}>`);
-    });
+    for (const attendee of attendees) {
+      const person = users.find(({ name }) => name.toLowerCase() == attendee.toLowerCase());
+      if (person === undefined) continue
+      slackUsers.push(`<@${person.id}>`);
+    }
   
     return slackUsers.join(' ');
   },
