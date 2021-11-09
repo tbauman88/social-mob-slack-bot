@@ -12,7 +12,7 @@ module.exports = {
     }
   
     if (modifier === 'pm') {
-      hours = parseInt(hours) + 16;
+      hours = parseInt(hours) + 17;
     }
   
     return new Date(`${day}T${hours}:${minutes}`);
