@@ -13,7 +13,7 @@ exports.handler = async function (event, context, callback) {
   try {
     const mobId = event.queryStringParameters.mob;
     const mob = await helpers.getMobs(+mobId);
-    const members = [mob.owner.name, ...mob.attendees.map(({ name }) => name)];
+    const members = mob.attendees.map(({ name }) => name);
     const attendees = await helpers.getMobAttendees(members);
 
     const res = await fetch('https://slack.com/api/chat.postMessage', {
