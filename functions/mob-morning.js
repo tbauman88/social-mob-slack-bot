@@ -28,7 +28,7 @@ exports.handler = async function (event, context, callback) {
             id,
             title,
             time: helpers.convertTime12to24(date, start_time),
-            attendees: [owner.name, ...attendees.map(({ name }) => name)]
+            attendees: attendees.map(({ name }) => name)
           })
         });
       });
