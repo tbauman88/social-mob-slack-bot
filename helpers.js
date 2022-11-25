@@ -1,18 +1,18 @@
-const fetch = require('node-fetch').default;
-const slackAPI = 'https://slack.com/api';
+const fetch = require("node-fetch").default;
+const slackAPI = "https://slack.com/api";
 const { TOKEN, MOBS_TOKEN, CHANNEL } = process.env;
 
 module.exports = {
   convertTime12to24: (day, time12h) => {
-    const [time, modifier] = time12h.split(' ');
-    let [hours, minutes] = time.split(':');
+    const [time, modifier] = time12h.split(" ");
+    let [hours, minutes] = time.split(":");
 
-    if (hours === '12') {
-      hours = '00';
+    if (hours === "12") {
+      hours = "00";
     }
 
-    if (modifier === 'pm') {
-      hours = parseInt(hours) + 16;
+    if (modifier === "pm") {
+      hours = parseInt(hours) + 17;
     }
 
     return new Date(`${day}T${hours}:${minutes}`);
@@ -22,15 +22,15 @@ module.exports = {
     const url = `${slackAPI}/api/chat.deleteScheduledMessage`;
 
     fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${TOKEN}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         channel: CHANNEL,
-        scheduled_message_id: message.id,
-      }),
+        scheduled_message_id: message.id
+      })
     }).then((res) => res.json());
   },
 
@@ -41,7 +41,7 @@ module.exports = {
   },
 
   getMobs: async (mobId) => {
-    const mobUrl = 'https://growth.vehikl.com/growth_sessions/day';
+    const mobUrl = "https://growth.vehikl.com/growth_sessions/day";
     const mobs = await fetch(mobUrl).then((res) => res.json());
     return mobs.find((m) => m.id === mobId);
   },
@@ -67,23 +67,23 @@ module.exports = {
       slackUsers.push(`<@${person.id}>`);
     }
 
-    return slackUsers.join(' ');
+    return slackUsers.join(" ");
   },
 
   getAfternoonSessions: async () => {
-    const url = 'https://growth.vehikl.com/growth_sessions/day';
+    const url = "https://growth.vehikl.com/growth_sessions/day";
     const sessions = await fetch(url, {
-      headers: { Authorization: `Bearer ${MOBS_TOKEN}` },
+      headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
     }).then((res) => res.json());
-    return sessions.filter((s) => s.start_time.includes('pm'));
+    return sessions.filter((s) => s.start_time.includes("pm"));
   },
 
   getMorningSessions: async () => {
-    const url = 'https://growth.vehikl.com/growth_sessions/day';
+    const url = "https://growth.vehikl.com/growth_sessions/day";
     const sessions = await fetch(url, {
-      headers: { Authorization: `Bearer ${MOBS_TOKEN}` },
+      headers: { Authorization: `Bearer ${MOBS_TOKEN}` }
     }).then((res) => res.json());
 
-    return sessions.filter((s) => s.start_time.includes('am'));
-  },
+    return sessions.filter((s) => s.start_time.includes("am"));
+  }
 };

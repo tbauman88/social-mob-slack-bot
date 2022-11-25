@@ -1,10 +1,10 @@
 // @ts-check
-const fetch = require('node-fetch').default;
-const helpers = require('../helpers.js');
+const fetch = require("node-fetch").default;
+const helpers = require("../helpers.js");
 
 exports.handler = async function (event, context, callback) {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 503, body: 'Unsupported Request Method' };
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 503, body: "Unsupported Request Method" };
   }
 
   try {
@@ -13,10 +13,10 @@ exports.handler = async function (event, context, callback) {
     helpers.deleteScheduledMessage(scheduledMessage);
 
     fetch(
-      `https://${process.env.NAME}.netlify.app/.netlify/functions/session-scheduler`,
+      `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           session: session.id,
           title: session.title,
@@ -26,8 +26,8 @@ exports.handler = async function (event, context, callback) {
       }
     );
 
-    callback(null, { statusCode: 204, body: 'Success' });
+    callback(null, { statusCode: 204, body: "Success" });
   } catch (e) {
-    callback(null, { statusCode: 500, body: 'Internal Server Error: ' + e });
+    callback(null, { statusCode: 500, body: "Internal Server Error: " + e });
   }
 };
