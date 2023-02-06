@@ -13,7 +13,7 @@ exports.handler = async function (event, context, callback) {
     helpers.deleteScheduledMessage(scheduledMessage);
 
     fetch(
-      `https://${process.env.NAME}.netlify.app/.netlify/functions/session-scheduler`,
+      `https://${process.env.NAME}.netlify.app/.netlify/functions/mob-scheduler`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
