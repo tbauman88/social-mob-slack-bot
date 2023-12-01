@@ -1,21 +1,12 @@
 const fetch = require("node-fetch").default;
 const slackAPI = "https://slack.com/api";
 const { TOKEN, MOBS_TOKEN, CHANNEL } = process.env;
+const moment = require("moment");
 
 module.exports = {
   convertTime12to24: (day, time12h) => {
-    const [time, modifier] = time12h.split(" ");
-    let [hours, minutes] = time.split(":");
-
-    if (hours === "12") {
-      hours = "00";
-    }
-
-    if (modifier === "pm") {
-      hours = parseInt(hours) + 17;
-    }
-
-    return new Date(`${day}T${hours}:${minutes}`);
+    const format = "YYYY-MM-DD hh:mm A";
+    return moment.utc(`${day} ${time12h}`, format).unix();
   },
 
   deleteScheduledMessage: (message) => {
