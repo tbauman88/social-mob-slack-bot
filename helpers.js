@@ -5,8 +5,7 @@ const moment = require("moment");
 
 module.exports = {
   convertTime12to24: (day, time12h) => {
-    const format = "YYYY-MM-DD hh:mm A";
-    return moment.utc(`${day} ${time12h}`, format).unix();
+    return moment(`${day} ${time12h}`, "YYYY-MM-DD hh:mm A").unix();
   },
 
   deleteScheduledMessage: (message) => {

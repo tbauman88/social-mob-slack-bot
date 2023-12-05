@@ -1,5 +1,5 @@
 import { convertTime12to24 } from "../helpers";
-import * as moment from "moment-timezone";
+import * as moment from "moment";
 
 describe("convertTime12to24", () => {
   it.each([
@@ -8,12 +8,11 @@ describe("convertTime12to24", () => {
     ["03:15 pm"],
     ["03:30 pm"],
     ["03:45 pm"]
-  ])("converts 12-hour format (%s) to 24-hour correctly", (time) => {
+  ])("converts 12-hour format (%s) to 24-hour correctly", (time: string) => {
     const currentDay = moment().format("YYYY-MM-DD");
 
-    const actualTimestamp = convertTime12to24(currentDay, time);
-
-    const actualTime = moment.unix(actualTimestamp).utc().format("hh:mm a");
+    const actualUnix = convertTime12to24(currentDay, time);
+    const actualTime = moment.unix(actualUnix).format("hh:mm a");
 
     expect(actualTime).toBe(time);
   });
